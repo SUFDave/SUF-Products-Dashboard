@@ -1,164 +1,196 @@
-# Golf Leaderboard Application
+# SUF Products Dashboard
 
-A real-time golf tournament leaderboard application with role-based access control for managing tournaments, groups, and scores.
+Real-time inventory management dashboard for tracking product stock levels across categories. Automatically syncs with your e-commerce platform and provides instant visibility into stock levels, low stock alerts, and category-based analytics.
 
 ## Features
 
-- **User Authentication**: Secure login with Firebase Authentication
-- **Role-Based Access Control**:
-  - Admin: Manage users and assign roles
-  - Organizer: Manage groups and update scores
-- **Real-time Score Updates**: Live leaderboard updates
-- **Group Management**: Organize players into groups for tournaments
-- **Responsive Design**: Works on desktop and mobile devices
+- **Real-time Stock Monitoring**: Live updates from your e-commerce platform
+- **Category-Based Filtering**: Filter products by SEATING, DESKS, STORAGE, TABLES, ACCESSORIES, LIGHTING, and more
+- **Low Stock Alerts**: Automatic alerts for products running low or out of stock
+- **Visual Analytics**: Charts and graphs showing inventory distribution by category
+- **Firebase Integration**: Scalable cloud infrastructure with Firestore and Cloud Functions
+- **Responsive Dashboard**: Built with React, TypeScript, and Tailwind CSS
 
 ## Tech Stack
 
-- **Frontend**: React 18
-- **Routing**: React Router v6
-- **Backend**: Firebase (Authentication & Firestore)
-- **Styling**: CSS3
+### Frontend (Dashboard)
+- **React 18** with TypeScript
+- **Vite** for fast development and building
+- **Tailwind CSS** for styling
+- **Firebase SDK** for real-time data
+
+### Backend (Functions)
+- **Firebase Cloud Functions** with TypeScript
+- **Firestore** for data storage
+- **Scheduled Functions** for automatic sync
+- **REST API** endpoints for manual operations
 
 ## Project Structure
 
 ```
-golf-leaderboard-app/
-├── public/
-│   ├── index.html                 # Main HTML template
-│   ├── favicon.ico               # App icon
-│   └── manifest.json             # PWA manifest
-├── src/
-│   ├── components/               # React components
-│   │   ├── LoginScreen.js        # Login form component
-│   │   ├── AdminDashboard.js     # Admin management interface
-│   │   ├── OrganizerDashboard.js # Organizer score management
-│   │   └── GroupCard.js          # Reusable group display component
-│   ├── context/                  # React context providers
-│   │   └── AuthContext.js        # Authentication context
-│   ├── firebase.js               # Firebase configuration
-│   ├── App.js                    # Main App component with routing
-│   ├── App.css                   # App-specific styles
-│   ├── index.js                  # React app entry point
-│   └── index.css                 # Global styles
-├── package.json                  # Dependencies and scripts
-├── package-lock.json            # Exact dependency versions
-└── README.md                    # Project documentation
+inventory-dashboard/
+├── functions/                      # Firebase Functions (Backend)
+│   ├── src/
+│   │   ├── data/
+│   │   │   └── categories.ts      # Product categories definition
+│   │   ├── services/
+│   │   │   ├── ecommerceService.ts   # E-commerce API integration
+│   │   │   ├── inventoryService.ts   # Firestore operations
+│   │   │   ├── categoryService.ts    # Category statistics
+│   │   │   └── alertService.ts       # Low stock alerts
+│   │   ├── types/
+│   │   │   └── product.ts         # TypeScript interfaces
+│   │   └── index.ts               # Cloud Functions exports
+│   ├── package.json
+│   ├── tsconfig.json
+│   └── .gitignore
+├── dashboard/                      # React Dashboard (Frontend)
+│   ├── src/
+│   │   ├── components/
+│   │   │   ├── Dashboard.tsx      # Main dashboard component
+│   │   │   ├── StatsCards.tsx     # Statistics cards
+│   │   │   ├── ProductTable.tsx   # Sortable product table
+│   │   │   ├── CategoryFilter.tsx # Category filter buttons
+│   │   │   ├── CategoryChart.tsx  # Inventory charts
+│   │   │   └── LowStockAlerts.tsx # Alert notifications
+│   │   ├── lib/
+│   │   │   └── firebase.ts        # Firebase configuration
+│   │   ├── App.tsx
+│   │   └── main.tsx
+│   ├── public/
+│   ├── package.json
+│   ├── vite.config.ts
+│   ├── tailwind.config.js
+│   └── tsconfig.json
+├── .github/
+│   └── workflows/
+│       └── deploy-functions.yml    # CI/CD for Functions
+├── firestore.rules                 # Security rules
+├── firebase.json                   # Firebase configuration
+├── .env.example                    # Environment variables template
+├── .gitignore
+└── README.md
 ```
 
 ## Setup Instructions
 
 ### Prerequisites
 
-- Node.js (v16 or higher)
+- Node.js 18 or higher
 - npm or yarn
-- Firebase account
+- Firebase CLI (`npm install -g firebase-tools`)
+- E-commerce platform with API access (Shopify, WooCommerce, etc.)
 
-### Installation
+### 1. Clone the Repository
 
-1. **Clone the repository**
-   ```bash
-   git clone <repository-url>
-   cd golf-leaderboard-app
-   ```
-
-2. **Install dependencies**
-   ```bash
-   npm install
-   ```
-
-3. **Configure Firebase**
-   - Create a new Firebase project at [Firebase Console](https://console.firebase.google.com/)
-   - Enable Authentication (Email/Password)
-   - Create a Firestore database
-   - Copy your Firebase configuration
-   - Update `src/firebase.js` with your Firebase configuration:
-     ```javascript
-     const firebaseConfig = {
-       apiKey: "YOUR_API_KEY",
-       authDomain: "YOUR_AUTH_DOMAIN",
-       projectId: "YOUR_PROJECT_ID",
-       storageBucket: "YOUR_STORAGE_BUCKET",
-       messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-       appId: "YOUR_APP_ID"
-     };
-     ```
-
-4. **Run the application**
-   ```bash
-   npm start
-   ```
-   The app will open at [http://localhost:3000](http://localhost:3000)
-
-5. **Build for production**
-   ```bash
-   npm run build
-   ```
-
-## Firebase Setup
-
-### Firestore Database Structure
-
-```
-users/
-  {userId}/
-    - email: string
-    - role: "admin" | "organizer"
-    - createdAt: timestamp
-
-groups/
-  {groupId}/
-    - name: string
-    - players: array
-      - id: string
-      - name: string
-      - score: number
-    - createdAt: timestamp
+```bash
+git clone <repository-url>
+cd SUF-Products-Dashboard
 ```
 
-### Security Rules
+### 2. Firebase Setup
 
-Add these security rules to your Firestore:
+```bash
+# Login to Firebase
+firebase login
 
-```javascript
-rules_version = '2';
-service cloud.firestore {
-  match /databases/{database}/documents {
-    match /users/{userId} {
-      allow read: if request.auth != null;
-      allow write: if request.auth != null &&
-        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
-    }
+# Initialize Firebase project (if not already done)
+firebase init
+```
 
-    match /groups/{groupId} {
-      allow read: if request.auth != null;
-      allow write: if request.auth != null;
-    }
-  }
-}
+### 3. Environment Variables
+
+Create a `.env` file in the root directory:
+
+```bash
+cp .env.example .env
+```
+
+Edit `.env` with your credentials (see `.env.example` for required variables)
+
+### 4. Install Dependencies
+
+```bash
+# Install Functions dependencies
+cd functions
+npm install
+
+# Install Dashboard dependencies
+cd ../dashboard
+npm install
+```
+
+### 5. Deploy Functions
+
+```bash
+cd functions
+npm run build
+firebase deploy --only functions
+```
+
+### 6. Run Dashboard Locally
+
+```bash
+cd dashboard
+npm run dev
+```
+
+The dashboard will open at `http://localhost:3000`
+
+### 7. Deploy Dashboard
+
+```bash
+cd dashboard
+npm run build
+firebase deploy --only hosting
 ```
 
 ## Usage
 
-### Admin Users
+### Automatic Sync
 
-1. Log in with admin credentials
-2. Navigate to Admin Dashboard
-3. Add new users (organizers or other admins)
-4. Manage user roles and permissions
+Firebase Functions automatically sync products from your e-commerce platform every hour, updating inventory levels and creating low stock alerts.
 
-### Organizer Users
+### Manual Sync
 
-1. Log in with organizer credentials
-2. View assigned groups
-3. Update player scores in real-time
-4. View overall leaderboard
+Trigger a manual sync via HTTP endpoint:
 
-## Available Scripts
+```bash
+curl -X POST https://us-central1-YOUR_PROJECT.cloudfunctions.net/syncProductsManual
+```
 
-- `npm start` - Runs the app in development mode
-- `npm build` - Builds the app for production
-- `npm test` - Runs the test suite
-- `npm eject` - Ejects from Create React App (irreversible)
+### Dashboard Features
+
+- **Stats Cards**: View total products, inventory, low stock, and out of stock items
+- **Category Filter**: Filter products by category
+- **Product Table**: Sortable, searchable table with color-coded inventory levels
+- **Low Stock Alerts**: Real-time alerts for products needing attention
+- **Category Chart**: Visual inventory distribution across categories
+
+## Firestore Structure
+
+### Collections
+
+**products/** - Product inventory data
+**alerts/** - Low stock and out of stock alerts
+**inventoryUpdates/** - Historical inventory changes
+
+See full schema details in the complete README section above.
+
+## Security
+
+Firestore security rules ensure:
+- Products are read-only from the dashboard
+- Only Cloud Functions can write to collections
+- Customize for authentication if needed
+
+## CI/CD
+
+GitHub Actions automatically deploys Firebase Functions when changes are pushed to `main` branch.
+
+Configure secrets:
+- `FIREBASE_TOKEN`: Generate with `firebase login:ci`
+- `FIREBASE_PROJECT_ID`: Your Firebase project ID
 
 ## Contributing
 
@@ -166,7 +198,7 @@ service cloud.firestore {
 2. Create a feature branch
 3. Commit your changes
 4. Push to the branch
-5. Create a Pull Request
+5. Open a Pull Request
 
 ## License
 
@@ -174,4 +206,4 @@ This project is licensed under the MIT License.
 
 ## Support
 
-For issues and questions, please open an issue on GitHub.
+For issues or questions, please open an issue on GitHub.

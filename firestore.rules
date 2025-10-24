@@ -1,0 +1,23 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Products collection - read only from dashboard
+    match /products/{productId} {
+      allow read: if true;  // Public read for dashboard
+      allow write: if false;  // Only functions can write
+    }
+
+    // Inventory updates collection
+    match /inventoryUpdates/{updateId} {
+      allow read: if true;
+      allow write: if false;  // Only functions can write
+    }
+
+    // Alerts collection
+    match /alerts/{alertId} {
+      allow read: if true;
+      allow write: if false;  // Only functions can write
+    }
+  }
+}
