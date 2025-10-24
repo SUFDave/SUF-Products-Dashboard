@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { Product } from '../types/product';
+import { Category } from '../data/categories';
 
 const ECOMMERCE_API_URL = process.env.ECOMMERCE_API_URL || '';
 const API_KEY = process.env.ECOMMERCE_API_KEY || '';
@@ -55,7 +56,7 @@ export class EcommerceService {
   /**
    * Determine product category based on tags, type, or title
    */
-  private determineCategory(product: any): string {
+  private determineCategory(product: any): Category {
     const tags = product.tags?.toLowerCase() || '';
     const type = product.product_type?.toLowerCase() || '';
     const title = product.title?.toLowerCase() || '';
