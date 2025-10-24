@@ -17,3 +17,8 @@ Real-time inventory management dashboard for tracking product stock levels acros
 4. Deploy functions and hosting
 
 ## Project Structure
+SUF-Products-Dashboard/
+├── functions/ # Firebase Functions
+├── dashboard/ # React Dashboard
+├── .github/ # GitHub Actions
+└── Configuration files
